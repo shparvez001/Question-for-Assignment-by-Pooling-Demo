@@ -1,0 +1,183 @@
+%Definitions regarding the document 
+\documentclass[11pt, a4paper]{article}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=15mm,
+ top=20mm,
+ right=15mm,
+ bottom=20mm,
+ }
+\title{Questions for Assignment}
+\author{Shahadat Hussain Parvez}
+\date{November 2020}
+\newcommand{\examName}{Assignment for Mid Semester Examination Fall 2020} %Assignment Title
+\newcommand{\courseCode}{CSE 000} %Course Code
+\newcommand{\courseTitle}{Test Course} %Course Title
+\newcommand{\totalMarks}{15} %Marks 
+\newcommand{\totalTime}{24 Hours} %Time Allowed for 
+%Add all instructions here
+\newcommand{\instructions}{Answer all the questions.\\
+Marks for this test will be provided holistically instead of for parts of the questions. Also marks for this test will vary depending on the viva performance.\\
+%add more instructions as necessary
+Try to answer parts of a question together.
+}
+
+%Definitions regarding Assignment submission. These are used in the submissionInstructions Page
+\newcommand{\emailSubject}{CSE 121 Midterm Assignment Fall 2020 by 2001030200XX } %Prescribed email subject for submission
+\newcommand{\fileName}{CSE121Mid-2001030200XX.pdf } %Prescribed filename for submission
+\newcommand{\submissionDeadline}{ December 2, 2020, Wednesday, 02:00 PM } %Last date of Submission
+\newcommand{\noticeDeadline}{ November 30, 2020, Wednesday} %Deadline to notify you about medical condition
+
+
+
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage{filecontents}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{blindtext}
+
+\usepackage{catchfile,environ,tikz}
+\usepackage{verbatim}
+
+%Begining of randomizer
+%%https://tex.stackexchange.com/questions/174872/generate-exam-from-a-question-bank
+\makeatletter% Taken from https://tex.stackexchange.com/q/109619/5764
+\def\declarenumlist#1#2#3{%
+  \expandafter\edef\csname pgfmath@randomlist@#1\endcsname{#3}%
+  \count@\@ne
+  \loop
+    \expandafter\edef
+    \csname pgfmath@randomlist@#1@\the\count@\endcsname
+      {\the\count@}
+    \ifnum\count@<#3\relax
+    \advance\count@\@ne
+  \repeat}
+\def\prunelist#1{%
+  \expandafter\xdef\csname pgfmath@randomlist@#1\endcsname
+          {\the\numexpr\csname pgfmath@randomlist@#1\endcsname-1\relax}
+  \count@\pgfmath@randomtemp 
+  \loop
+    \expandafter\global\expandafter\let
+    \csname pgfmath@randomlist@#1@\the\count@\expandafter\endcsname
+    \csname pgfmath@randomlist@#1@\the\numexpr\count@+1\relax\endcsname
+    \ifnum\count@<\csname pgfmath@randomlist@#1\endcsname\relax
+      \advance\count@\@ne
+  \repeat}
+\makeatother
+
+% Define how each questionblock should be handled
+\newcounter{questionblock}
+\newcounter{totalquestions}
+\NewEnviron{questionblock}{}%
+
+\newcommand{\randomquestionsfrombank}[2]{%
+  \CatchFileDef{\bank}{#1}{}% Read the entire bank of questions into \bank
+  \setcounter{totalquestions}{0}% Reset total questions counters  ***
+  \RenewEnviron{questionblock}{\stepcounter{totalquestions}}% Count every question  ***
+  \bank% Process file  ***
+  \declarenumlist{uniquequestionlist}{1}{\thetotalquestions}% list from 1 to totalquestions inclusive.
+  \setcounter{totalquestions}{#2}% Start the count-down
+  \RenewEnviron{questionblock}{%
+    \stepcounter{questionblock}% Next question
+    \ifnum\value{questionblock}=\randomquestion 
+      \par% Start new paragraph
+      \item \BODY% Print question
+    \fi
+  }%
+  \foreach \uNiQueQ in {1,...,#2} {% Extract #2 random questions
+    \setcounter{questionblock}{0}% Start fresh with question block counter
+    \pgfmathrandomitem\randomquestion{uniquequestionlist}% Grab random question from list
+    \xdef\randomquestion{\randomquestion}% Make random question available globally
+    \prunelist{uniquequestionlist}% Remove picked item from list
+    \bank% Process file
+  }}
+%End of randomizer
+
+%%%%   DEMO of  Adding questions     %%%%
+\begin{comment}
+To use this format with random question pooling create a .tex file and keep all the questions of similar type in a file. 
+Each questions should be in the format below.
+\begin{questionblock} 
+Your questions here. 
+You can use enumeration and itemize to create multiple parts of a question.
+\end{questionblock}
+
+
+\end{comment}
+
+
+
+
+
+%Actual Document starts
+\begin{document}
+
+%Define the number of sets here. Change 10 to any number you need
+\newcommand{\numberOfSets}{10}
+\foreach \x in {1,...,\numberOfSets} {
+\setcounter{page}{1}    %Define page number 1 for each sets
+
+%Set header starts here
+    \large Set: \x
+    \begin{center}
+        \Large North East University Bangladesh
+        \\Department of Computer Science and Engineering
+        \\ \examName
+        \\Program: B.Sc. (Eng.) in CSE
+        \\Course: \courseCode(\courseTitle)
+    \end{center}
+    \begin{tabular}{l c r} 
+        {\Large Marks:  \totalMarks}& 
+        {\hspace{9cm} }& 
+        {\Large Total Time:   \totalTime}\\
+        \hline
+    \end{tabular}\\
+    \textbf{Instructions: \instructions}
+%Set header ends here
+
+Start of Each questions    
+    \bigskip
+    \begin{center}
+       Answer the following questions.
+    \end{center} 
+    
+    %Start of question numbering    
+    \begin{enumerate}
+    %Simple example of using dumping questions randomly
+    \randomquestionsfrombank{1. firstType.tex}{5}
+    
+    %Fixed questions can be also added inside an item tage.
+    \item This is a demo question
+    
+    %Demo of generating second level Questions.  For this inside an item enumeration needed.
+    \item In answer script write the statement first and identify if the statements are true or false. 
+    \begin{enumerate}
+        \randomquestionsfrombank{2. secondType.tex}{5}
+    \end{enumerate}   
+    
+    
+    %Adding different instructions for different type of questions
+    \bigskip
+    \begin{center}
+        Answer each parts of the following questions
+    \end{center}
+    \randomquestionsfrombank{3. thirdType.tex}{2}
+    \end{enumerate}
+    %End of questions
+    \begin{center}
+        \Huge{---End of Questions---}
+    \end{center}
+    
+    %Add the Submission Instruction Page    
+    \pagebreak
+    \include{submissionInstruction}
+    %Add the Demo front Page
+    \pagebreak
+    \include{submissionFrontPage}
+    
+}
+
+\end{document}
